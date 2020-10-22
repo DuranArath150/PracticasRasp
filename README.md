@@ -1,4 +1,3 @@
-https://images.cooltext.com/5474519.gif
 <a href="https://cooltext.com"><img src="https://images.cooltext.com/5474519.gif" width="346" height="89" alt="Resumen" /></a>
 <br />Image by <a href="https://cooltext.com">Cool Text: Free Logos and Buttons</a> - <a href="https://cooltext.com/Edit-Logo?LogoID=3663540622">Create An Image Just Like This</a>
 
