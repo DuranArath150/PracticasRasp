@@ -1,4 +1,4 @@
-# PracticasRasp
+# Resumen del libro
 
 
 ARM es una arquitectura RISC (Reduced Instruction Set Computer=Ordenador
