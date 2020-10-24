@@ -49,19 +49,21 @@ var2 : .word 4
 var3 : .word 0x1234
 .text
 .global main
-main : ldr r1, puntero_var1 /* r1 <- & var1 */
-ldr r1, [ r1 ] /* r1 <- *r1 */
-ldr r2, puntero_var2 /* r2 <- & var2 */
-ldr r2, [ r2 ] /* r2 <- *r2 */
-ldr r3, puntero_var3 /* r3 <- & var3 */
-add r0, r1, r2 /* r0 <- r1 + r2 */
-str r0, [ r3 ] /* *r3 <- r0 */
+main : ldr r1, puntero_var1 
+ldr r1, [ r1 ] 
+ldr r2, puntero_var2 
+ldr r2, [ r2 ] 
+ldr r3, puntero_var3 
+add r0, r1, r2 
+str r0, [ r3 ] 
 bx lr
 puntero_var1 : .word var1
 puntero_var2 : .word var2
 puntero_var3 : .word var3
 
 ```
+![](imagenes/(1.1.5.png)
+
 **1.1.6.** Ensamblar y *linkar* un programa<br>
 La traducción o ensamblado de un módulo fuente se realiza con el programa Gnu Assembler, con el siguiente comando:
 ```as -o nombreprograma.o nombreprograma.s```
@@ -70,7 +72,53 @@ El as genera un fichero nombreprograma.o. Para montar (linkar) hay que hacer:
 Una vez hecho ésto, ya tenemos un fichero ejecutable (nombreprograma) que podemos ejecutar o depurar con el gdb.<br>
 **1.2.** Enunciados de la práctica<br>
 **1.2.2**<br>
+```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
+.data
+var1 : .byte 0b00110010
+.align
+var2 : .byte 0b11000000
+.align
+text
+.global main
+main : ldr r1, = var1 
+ldrsb r1, [ r1 ] 
+ldr r2, = var2 
+ldrsb r2, [ r2 ] 
+add r0, r1, r2 
+bx lr
+```
+![](imagenes/(1.2.2.png)
 **1.2.3**<br>
+```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
+.text
+.global main
+main : mov r2, # 0b11110000 
+mov r3, # 0b10101010 
+and r0, r2, r3 
+orr r1, r2, r3 
+mvn r4, r0 
+mov r0, # 0x80000000
+tst r0, # 0x80000000
+tst r0, # 0x40000000
+bx lr
+```
+![](imagenes/(1.2.3.png)
 **1.2.4** Rotaciones y desplazamientos <br>
 Los desplazamientos lógicos desplazan los bit del registro fuente introduciendo ceros.El último bit que sale del registro fuente se almacena en el flag C.<br>
 Las instrucciones de rotación también desplazan, pero el bit que sale del valor se realimenta. No existe ninguna instrucción para rotar hacia la izquierda ROL, ya que puede simularse con la de rotación a la derecha ROR que sí existe. En estas instrucciones el bit desplazado fuera es el mismo que el que entra, además de dejar una copia en el flag C.<br>
@@ -82,6 +130,41 @@ Donde para calcular el valor hacemos el paso inverso al explicado en gdb. Querem
 Todas las instrucciones de rotación en realidad son subinstrucciones que el ensamblador traduce a una instrucción mov. <br>
 ```LSRs r0, r0, #1```
 ``` movs r0, r0, LSR #1```
+```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
+ .data
+var1 : .word 0x80000000
+.text
+.global main
+main : ldr r0, = var1
+ldr r1, [ r0 ] 
+LSRs r1, r1, #1
+LSRs r1, r1, #3 
+ldr r2, [ r0 ] 
+ASRs r2, r2, #1 
+ASRs r2, r2, #3 
+ldr r3, [ r0 ] 
+RORs r3, r3, # 31 
+RORs r3, r3, # 31 
+RORs r3, r3, # 24 
+ldr r4, [ r0 ] 
+msr cpsr_f, #0 
+adcs r4, r4, r4 
+adcs r4, r4, r4 
+adcs r4, r4, r4 
+msr cpsr_f, # 0x20000000 
+adcs r4, r4, r4 
+bx lr
+```
+![](imagenes/(1.2.4.png)
+
 **1.2.5** Instrucciones de multiplicación<br>
 Las instrucciones de multiplicación admiten muchas posibilidades, debido a que es una operación en la cual el resultado tiene el doble de bits que cada operando.
 |Instrucción| Bits |Nombre| 
@@ -111,6 +194,37 @@ Un método para determinar si una constante entra o no en una instrucción mov e
 ``str r2, [ r1, #+ 12 ] /* *( r1 + 12) <- r2 */``
 <br>
 **Direccionamiento a memoria, actualizando registro puntero.** En este modo de direccionamiento, el registro que genera la dirección se actualiza con la propia dirección. De esta forma podemos recorrer un array con un sólo registro sin necesidad de hacer el incremento del puntero en una instrucción aparte.<br>
+```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
+ .data
+var1 : .word 0x12345678
+var2 : .word 0x87654321
+var3 : .word 0x00012345
+.text
+.global main
+main : ldr r0, = var1
+ldr r1, = var2
+ldr r2, = var3 
+ldrh r3, [ r0 ] 
+ldrh r4, [ r1 ]
+muls r5, r3, r4 
+ldr r3, [ r0 ] 
+ldr r4, [ r1 ] 
+umull r5, r6, r3, r4 
+smull r5, r6, r3, r4
+ldrh r3, [ r0 ] 
+ldr r4, [ r2 ] 
+smulwb r5, r3, r4 
+smultt r5, r3, r4 
+```
+![](imagenes/(1.2.5.png)
 **2.1.2.** Tipos de datos<br>
 **Tipos clasicos de datos.**
 |ARM  |Tipo en C  |bits|Rango|
@@ -162,6 +276,14 @@ i= vi ;
 **2.1.5.** Compilación a ensamblador<br>
 En el caso de gcc este proceso se hace en dos fases: en una primera se pasa de C a ensamblador, y en una segunda de ensambladador a código compilado. Lo interesante es que podemos interrumpir justo después de la compilación y ver con un editor el aspecto que tiene el código ensamblador generado a partir del código fuente en C. <br>
 ```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
 # include < stdio .h > 
 void main ( void ){
  int i;
@@ -170,6 +292,7 @@ void main ( void ){
  } 
  }
 ```
+![](imagenes/(2.1.5.png)
 Después de crear el fichero tipos3.s, lo compilamos con este comando.<br>
 ``gcc -Os -S -o tipos3a.s tipos3.c``
 Con el parámetro -S forzamos la generación del .s en lugar del .o y con -Os le indicamos al compilador que queremos optimizar en tamaño, es decir que queremos código ensamblador lo más pequeño posible, sin importar el rendimiento del mismo.
@@ -178,6 +301,14 @@ Con el parámetro -S forzamos la generación del .s en lugar del .o y con -Os le
 **2.2.1** Suma de elementos de un vector<br>
 El vector se denomina vector y tiene 5 elementos de tipo int (entero de 32 bits).
 ```bash
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
 # include < stdio .h > 
 void main ( void ){ 
 int i , suma ; 
@@ -187,28 +318,27 @@ suma += vector [i ];
 } 
 printf (" La suma es %d \n" , suma ); }
 ```
+![](imagenes/(2.2.1.png)
+![](imagenes/(2.2.1-2.png)
+
 ```bash
-.data
-var1 : .asciz " La suma es %d \n"
-var2 : .word 128, 32, 100, - 30, 124 
-
-.text
-.global main
- 
-/* Salvamos registros */ 
-main : push { r4, lr }
-/* Inicializamos variables y apuntamos r2 a var2 */ 
-		mov r0, # 5 
-		mov r1, # 0 
-		ldr r2, = var2 
-/* Bucle que hace la suma */ 
-bucle : ldr r3, [ r2 ] , # 4 
-		add r1, r1, r3 
-		subs r0, r0, #1 
-		bne bucle 
-/* Imprimimos resultado */
-		ldr r0, = var1 bl printf
-/* Recuperamos registros y salimos */ 
-		pop { r4, lr } bx lr
+/* @@
+    @@ Instituto Tecnologico de Tijuana
+    @@ Depto de Sistemas y Computación
+    @@ Ing. En Sistemas Computacionales
+    @@   
+    @@ Autor : Arath Duran Hernandez @nickname DuranArath150
+    @@ Repositorio: http://github.com/DuranArath/PracticasRasp
+ */
+ void main ( void ){
+int i;
+long long suma ;
+int vector [5]= {1600000000 , -100 , 800000000 , -50 , 200};
+for ( suma = i = 0; i <5; i ++ ){
+suma += vector [i ];
+}
+printf (" La suma es %d \n" , suma );
+}
 ```
-
+![](imagenes/(2.2.1.8.png)
+![](imagenes/(2.2.1.8-2.png)
