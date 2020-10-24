@@ -96,6 +96,7 @@ add r0, r1, r2
 bx lr
 ```
 ![](imagenes/122.png)
+
 **1.2.3**<br>
 ```bash
 /* @@
@@ -119,6 +120,7 @@ tst r0, # 0x40000000
 bx lr
 ```
 ![](imagenes/123.png)
+
 **1.2.4** Rotaciones y desplazamientos <br>
 Los desplazamientos lógicos desplazan los bit del registro fuente introduciendo ceros.El último bit que sale del registro fuente se almacena en el flag C.<br>
 Las instrucciones de rotación también desplazan, pero el bit que sale del valor se realimenta. No existe ninguna instrucción para rotar hacia la izquierda ROL, ya que puede simularse con la de rotación a la derecha ROR que sí existe. En estas instrucciones el bit desplazado fuera es el mismo que el que entra, además de dejar una copia en el flag C.<br>
@@ -225,6 +227,7 @@ smulwb r5, r3, r4
 smultt r5, r3, r4 
 ```
 ![](imagenes/125.png)
+
 **2.1.2.** Tipos de datos<br>
 **Tipos clasicos de datos.**
 |ARM  |Tipo en C  |bits|Rango|
@@ -293,6 +296,7 @@ void main ( void ){
  }
 ```
 ![](imagenes/215.png)
+
 Después de crear el fichero tipos3.s, lo compilamos con este comando.<br>
 ``gcc -Os -S -o tipos3a.s tipos3.c``
 Con el parámetro -S forzamos la generación del .s en lugar del .o y con -Os le indicamos al compilador que queremos optimizar en tamaño, es decir que queremos código ensamblador lo más pequeño posible, sin importar el rendimiento del mismo.
